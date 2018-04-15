@@ -27,6 +27,7 @@ namespace CA2_IMeet.Models
         [Display(Name = "End Time")]
         public DateTime End_DateTime { get; set; }
 
-        //foreign key to user?
+        [ForeignKey("IdentityModel")]
+        public string Username { get; set; }
     }
 }
