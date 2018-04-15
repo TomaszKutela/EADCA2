@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.ComponentModel.DataAnnotations;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CA2_IMeet.Models
 {
@@ -16,6 +18,7 @@ namespace CA2_IMeet.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
