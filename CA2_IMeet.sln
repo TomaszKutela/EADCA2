@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA2_IMeet", "CA2_IMeet\CA2_IMeet.csproj", "{7D17C18F-45FB-45B4-9FCE-59940ADCB990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CA2_IMeet.Tests", "CA2_IMeet.Tests\CA2_IMeet.Tests.csproj", "{A5A8BB15-04A5-4A6B-BC0F-EE3E25D7CF0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D17C18F-45FB-45B4-9FCE-59940ADCB990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D17C18F-45FB-45B4-9FCE-59940ADCB990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D17C18F-45FB-45B4-9FCE-59940ADCB990}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D17C18F-45FB-45B4-9FCE-59940ADCB990}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A8BB15-04A5-4A6B-BC0F-EE3E25D7CF0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A8BB15-04A5-4A6B-BC0F-EE3E25D7CF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A8BB15-04A5-4A6B-BC0F-EE3E25D7CF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A8BB15-04A5-4A6B-BC0F-EE3E25D7CF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ADBC11C8-2DA8-4375-BA2F-3D2D462217E0}
+	EndGlobalSection
+EndGlobal
