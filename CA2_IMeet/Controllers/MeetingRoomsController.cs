@@ -47,13 +47,20 @@ namespace CA2_IMeet.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "RoomId,Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
+        public ActionResult Create([Bind(Include = "Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.MeetingRooms.Add(meetingRoom);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.MeetingRooms.Add(meetingRoom);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(meetingRoom);
@@ -77,17 +84,30 @@ namespace CA2_IMeet.Controllers
         // POST: MeetingRooms/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "RoomId,Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
+        public ActionResult EditPost(int? id)
         {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(meetingRoom).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(meetingRoom);
+            var roomToUpdate = db.MeetingRooms.Find(id);
+            if (TryUpdateModel(roomToUpdate, "",
+               new string[] { "Name", "Size", "Location", "Equipment" }))
+            {
+                try
+                {
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            return View(roomToUpdate);
         }
 
         // GET: MeetingRooms/Delete/5
