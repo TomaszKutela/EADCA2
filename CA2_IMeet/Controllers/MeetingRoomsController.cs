@@ -13,7 +13,7 @@ namespace CA2_IMeet.Controllers
 {
     public class MeetingRoomsController : Controller
     {
-        private BookingContex db = new BookingContex();
+        private BookingContext db = new BookingContext();
 
         // GET: MeetingRooms
         public ActionResult Index()

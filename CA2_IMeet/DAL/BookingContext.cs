@@ -8,14 +8,14 @@ using System.Web;
 
 namespace CA2_IMeet.DAL
 {
-    public class BookingContex : DbContext
+    public class BookingContext : DbContext
     {
-        public BookingContex() : base("BookingContext")
+        public BookingContext() : base("BookingContext")
         {
         }
 
         public DbSet<MeetingRoom> MeetingRooms { get; set; }
-        public DbSet<Booking> Enrollments { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
 
         //to prevent EF to pluralize table names
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
