@@ -47,13 +47,20 @@ namespace CA2_IMeet.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "RoomId,Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
+        public ActionResult Create([Bind(Include = "Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.MeetingRooms.Add(meetingRoom);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.MeetingRooms.Add(meetingRoom);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             return View(meetingRoom);
@@ -77,25 +84,42 @@ namespace CA2_IMeet.Controllers
         // POST: MeetingRooms/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "RoomId,Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(meetingRoom).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(meetingRoom);
-        }
-
-        // GET: MeetingRooms/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult EditPost(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var roomToUpdate = db.MeetingRooms.Find(id);
+            if (TryUpdateModel(roomToUpdate, "",
+               new string[] { "Name", "Size", "Location", "Equipment" }))
+            {
+                try
+                {
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                }
+            }
+            return View(roomToUpdate);
+        }
+
+        // GET: MeetingRooms/Delete/5
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete failed. Please try again, and if the problem persists, contact your system administrator.";
             }
             MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
             if (meetingRoom == null)
@@ -106,13 +130,20 @@ namespace CA2_IMeet.Controllers
         }
 
         // POST: MeetingRooms/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id)
         {
-            MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
-            db.MeetingRooms.Remove(meetingRoom);
-            db.SaveChanges();
+            try
+            {
+                MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
+                db.MeetingRooms.Remove(meetingRoom);
+                db.SaveChanges();
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
             return RedirectToAction("Index");
         }
 

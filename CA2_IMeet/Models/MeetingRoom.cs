@@ -25,5 +25,6 @@ namespace CA2_IMeet.Models
         public string Location { get; set; }
 
         public string Equipment { get; set; }
+
     }
 }
