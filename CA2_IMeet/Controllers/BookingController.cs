@@ -69,7 +69,6 @@ namespace CA2_IMeet.Controllers
         }
 
 
-
         // GET: Booking/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -77,9 +76,29 @@ namespace CA2_IMeet.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            Booking booking = db.Bookings.Find(id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
+        }
+
+        // POST: Booking/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPost(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             var bookingToUpdate = db.Bookings.Find(id);
-           
-            if (TryUpdateModel(bookingToUpdate, "", new string[] {"MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime"}))
+
+            if (TryUpdateModel(bookingToUpdate, "", 
+                new string[] { "MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime" }))
             {
                 try
                 {
@@ -90,27 +109,10 @@ namespace CA2_IMeet.Controllers
                 {
                     ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
                 }
-                
+
             }
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
             return View(bookingToUpdate);
-        }
-
-        // POST: Booking/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BookingId,MeetingReference,RoomId,Date,Start_DateTime,End_DateTime,UserId")] Booking booking)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(booking).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
-            return View(booking);
         }
 
         // GET: Booking/Delete/5
