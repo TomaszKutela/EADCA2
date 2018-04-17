@@ -16,9 +16,34 @@ namespace CA2_IMeet.Controllers
         private BookingContext db = new BookingContext();
 
         // GET: MeetingRooms
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString)
         {
-            return View(db.MeetingRooms.ToList());
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.SizeSortParm = sortOrder == "Size" ? "size_desc" : "Size";
+            var rooms = from r in db.MeetingRooms
+                        select r;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                rooms = rooms.Where(r => r.Name.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    rooms = rooms.OrderByDescending(r => r.Name);
+                    break;
+                case "Size":
+                    rooms = rooms.OrderBy(r => r.Size);
+                    break;
+                case "size_desc":
+                    rooms = rooms.OrderByDescending(r => r.Size);
+                    break;
+                default:
+                    rooms = rooms.OrderBy(r => r.Name);
+                    break;
+            }
+            return View(rooms.ToList());
         }
 
         // GET: MeetingRooms/Details/5
