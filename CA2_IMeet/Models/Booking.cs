@@ -20,6 +20,8 @@ namespace CA2_IMeet.Models
         [ForeignKey("RoomId")]
         public virtual MeetingRoom MeetingRoom { get; set; }
 
+        [Required(ErrorMessage = "Indicate meeting date.")]
+        public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Indicate when meeting starts.")]
         [Display(Name = "Start Time")]

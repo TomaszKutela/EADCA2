@@ -1,0 +1,66 @@
+﻿@model CA2_IMeet.Models.Booking
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Booking</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.MeetingRoom.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MeetingRoom.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MeetingReference)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MeetingReference)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Start_DateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Start_DateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.End_DateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.End_DateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BookingId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
