@@ -49,7 +49,7 @@ namespace CA2_IMeet.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MeetingReference,RoomId,Date,Start_DateTime,End_DateTime,")] Booking booking)
+        public ActionResult Create([Bind(Include = "MeetingReference, RoomId, Date, Start_DateTime, End_DateTime")] Booking booking)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace CA2_IMeet.Controllers
             }
             catch (DataException)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again,and if the problem persists see your system admistrator")
+                ModelState.AddModelError("", "Unable to save changes. Please try again, and if the problem persists, contact your system admistrator");
             }
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
             return View(booking);
@@ -79,16 +79,16 @@ namespace CA2_IMeet.Controllers
             }
             var bookingToUpdate = db.Bookings.Find(id);
            
-            if (TryUpdateModel(bookingToUpdate, "", new string[] {"Booking ID: ","Date: ", "Start Time: ", "End Time: ",}))
+            if (TryUpdateModel(bookingToUpdate, "", new string[] {"MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime"}))
             {
                 try
                 {
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch(DataException)
+                catch (DataException)
                 {
-                    ModelState.AddModelError("","Unable to save changes.Try again. If problem persists, see your system administrator")
+                    ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
                 }
                 
             }
@@ -122,7 +122,7 @@ namespace CA2_IMeet.Controllers
             }
             if (saveChangesError.GetValueOrDefault())
             {
-                ViewBag.ErrorMessage = "Delete failed. Try again. If problem persists see your system administrator";
+                ViewBag.ErrorMessage = "Delete failed. Please try again. If problem persists, contact your system administrator.";
             }
             Booking booking = db.Bookings.Find(id);
             if (booking == null)
