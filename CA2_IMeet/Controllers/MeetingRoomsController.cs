@@ -111,11 +111,15 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: MeetingRooms/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete failed. Please try again, and if the problem persists, contact your system administrator.";
             }
             MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
             if (meetingRoom == null)
@@ -126,13 +130,20 @@ namespace CA2_IMeet.Controllers
         }
 
         // POST: MeetingRooms/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id)
         {
-            MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
-            db.MeetingRooms.Remove(meetingRoom);
-            db.SaveChanges();
+            try
+            {
+                MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
+                db.MeetingRooms.Remove(meetingRoom);
+                db.SaveChanges();
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
             return RedirectToAction("Index");
         }
 
