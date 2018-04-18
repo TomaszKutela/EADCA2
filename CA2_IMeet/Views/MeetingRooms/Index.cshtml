@@ -10,13 +10,20 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 
-@using (Html.BeginForm())
-{
-    <p>
-        Find by Name: @Html.TextBox("SearchString")
-        <input type="submit" value="Search" />
-    </p>
-}
+
+<hr />
+<div class="container">
+    <div class="pull-right">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="search-text">Meeting Room Name</label>
+                @Html.TextBox("SearchString", "", new { @class = "form-control", @placeholder = "Search Room Name" })
+            </div>
+            <button type="submit" class="btn btn-success" id="search-btn">Search</button>
+        </form>
+    </div>
+</div>
+<br/>
 
 <table class="table">
     <tr>
