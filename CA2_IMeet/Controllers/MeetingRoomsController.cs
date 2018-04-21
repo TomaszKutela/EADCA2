@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using CA2_IMeet.DAL;
 using CA2_IMeet.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace CA2_IMeet.Controllers
 {
@@ -83,7 +84,7 @@ namespace CA2_IMeet.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
@@ -127,7 +128,7 @@ namespace CA2_IMeet.Controllers
 
                     return RedirectToAction("Index");
                 }
-                catch (DataException)
+                catch (RetryLimitExceededException)
                 {
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
                 }
@@ -165,7 +166,7 @@ namespace CA2_IMeet.Controllers
                 db.MeetingRooms.Remove(meetingRoom);
                 db.SaveChanges();
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }

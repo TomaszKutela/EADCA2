@@ -196,6 +196,7 @@
     <Compile Include="Controllers\MeetingRoomsController.cs" />
     <Compile Include="DAL\BookingContext.cs" />
     <Compile Include="DAL\BookingInitializer.cs" />
+    <Compile Include="DAL\SchoolConfiguration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
