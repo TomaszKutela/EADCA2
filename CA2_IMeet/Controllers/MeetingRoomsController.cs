@@ -48,7 +48,7 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: MeetingRooms/Details/5
-        public ActionResult Details(int? id)
+        /*public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -60,7 +60,7 @@ namespace CA2_IMeet.Controllers
                 return HttpNotFound();
             }
             return View(meetingRoom);
-        }
+        }*/
 
         // GET: MeetingRooms/Create
         public ActionResult Create()
