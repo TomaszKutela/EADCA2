@@ -35,7 +35,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.MeetingRoom.Name)
+            @Html.ActionLink(@item.MeetingRoom.Name, "Details", "MeetingRooms", new { keyword = item.MeetingRoom.Name }, null)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.MeetingReference)

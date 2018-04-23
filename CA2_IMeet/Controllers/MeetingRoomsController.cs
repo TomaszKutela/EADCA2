@@ -47,20 +47,19 @@ namespace CA2_IMeet.Controllers
             return View(rooms.ToList());
         }
 
-        // GET: MeetingRooms/Details/5
-        /*public ActionResult Details(int? id)
+        public ActionResult Details(string keyword)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(keyword))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
+            MeetingRoom meetingRoom = db.MeetingRooms.Where(n => n.Name == keyword).First();
             if (meetingRoom == null)
             {
                 return HttpNotFound();
             }
             return View(meetingRoom);
-        }*/
+        }
 
         // GET: MeetingRooms/Create
         public ActionResult Create()
@@ -130,7 +129,7 @@ namespace CA2_IMeet.Controllers
                 }
                 catch (RetryLimitExceededException)
                 {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                    ModelState.AddModelError("", "Unable to save changes. Please try again, and if the problem persists, contact your system administrator.");
                 }
             }
             return View(roomToUpdate);
@@ -163,6 +162,9 @@ namespace CA2_IMeet.Controllers
             try
             {
                 MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
+                //add try catch for if there is a booking in that room after today then don't delete 
+                //+ find out if bookings for that room will be deleted?
+                //Booking bookingUsingRoomInFuture = db.Bookings.Where(x => (x.RoomId = meetingRoom.RoomId) && (x.Date > DateTime.Now)) //or use exist?
                 db.MeetingRooms.Remove(meetingRoom);
                 db.SaveChanges();
             }

@@ -20,12 +20,5 @@ namespace CA2_IMeet.Controllers
 
             return View();
         }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
     }
 }
