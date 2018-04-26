@@ -78,9 +78,16 @@ namespace CA2_IMeet.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    db.MeetingRooms.Add(meetingRoom);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    if (db.MeetingRooms.FirstOrDefault(m => m.Name == meetingRoom.Name) == null)
+                    {
+                        db.MeetingRooms.Add(meetingRoom);
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "A meeting room with the same name already exists.");
+                    }
                 }
             }
             catch (RetryLimitExceededException)

@@ -17,7 +17,7 @@ namespace CA2_IMeet.Controllers
         private BookingContext db = new BookingContext();
 
         // GET: Booking
-        public ActionResult Index()
+        public ActionResult ViewAllBookings()
         {
             var bookings = db.Bookings.Include(b => b.MeetingRoom);
             return View(bookings.ToList());
@@ -58,7 +58,7 @@ namespace CA2_IMeet.Controllers
                 {
                     db.Bookings.Add(booking);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("ViewAllBookings");
                 }
             }
             catch (RetryLimitExceededException)
@@ -73,6 +73,9 @@ namespace CA2_IMeet.Controllers
         // GET: Booking/Edit/5
         public ActionResult Edit(int? id)
         {
+            SelectList roomslist = new SelectList(db.MeetingRooms.ToList(), "RoomId", "Name", db.MeetingRooms);
+            ViewData["Names"] = roomslist;
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -104,7 +107,7 @@ namespace CA2_IMeet.Controllers
                 try
                 {
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("ViewAllBookings");
                 }
                 catch (RetryLimitExceededException)
                 {
@@ -143,7 +146,7 @@ namespace CA2_IMeet.Controllers
             Booking booking = db.Bookings.Find(id);
             db.Bookings.Remove(booking);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewAllBookings");
         }
 
         protected override void Dispose(bool disposing)

@@ -33,5 +33,24 @@ namespace CA2_IMeet.Models
 
         public string UserId { get; set; }
 
+        public bool IsRoomAvailable(Booking newBooking)
+        {
+            if (newBooking.RoomId == RoomId && newBooking.Date == Date)
+            {
+                if((newBooking.Start_DateTime > End_DateTime) || (newBooking.End_DateTime < Start_DateTime))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }
