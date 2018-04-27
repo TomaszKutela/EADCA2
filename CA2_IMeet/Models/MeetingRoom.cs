@@ -13,6 +13,7 @@ namespace CA2_IMeet.Models
         public int RoomId { get; set; }
 
         [Required(ErrorMessage ="Name cannot be left blank.")]
+        [Display(Name = "Room Name")]
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
         public string Name { get; set; }
 

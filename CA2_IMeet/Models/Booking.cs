@@ -13,14 +13,17 @@ namespace CA2_IMeet.Models
         public int BookingId { get; set; }
 
         [Required(ErrorMessage = "Indicate Meeting Reference.")]
+        [Display(Name = "Meeting Title")]
         public string MeetingReference { get; set; }
 
         [Required]
+        [Display(Name = "Room")]
         public int RoomId { get; set; }
         [ForeignKey("RoomId")]
         public virtual MeetingRoom MeetingRoom { get; set; }
 
         [Required(ErrorMessage = "Indicate meeting date.")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Indicate when meeting starts.")]
@@ -31,6 +34,7 @@ namespace CA2_IMeet.Models
         [Display(Name = "End Time")]
         public DateTime End_DateTime { get; set; }
 
+        [Display(Name = "Meeting Owner")]
         public string UserId { get; set; }
 
         public bool IsRoomAvailable(Booking newBooking)
