@@ -13,6 +13,7 @@ namespace CA2_IMeet.Models
         public int BookingId { get; set; }
 
         [Required(ErrorMessage = "Indicate Meeting Reference.")]
+        [StringLength(55, ErrorMessage = "Meeting Title cannot be longer than 55 characters.")]
         [Display(Name = "Meeting Title")]
         public string MeetingReference { get; set; }
 
@@ -23,21 +24,24 @@ namespace CA2_IMeet.Models
         public virtual MeetingRoom MeetingRoom { get; set; }
 
         [Required(ErrorMessage = "Indicate meeting date.")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Indicate when meeting starts.")]
+        [DataType(DataType.Time)]
         [Display(Name = "Start Time")]
         public DateTime Start_DateTime { get; set; }
 
         [Required(ErrorMessage = "Indicate when meeting ends.")]
+        [DataType(DataType.Time)]
         [Display(Name = "End Time")]
         public DateTime End_DateTime { get; set; }
 
         [Display(Name = "Meeting Owner")]
         public string UserId { get; set; }
 
-        public bool IsRoomAvailable(Booking newBooking)
+        public bool IsRoomAvailableForBooking(Booking newBooking)
         {
             if (newBooking.RoomId == RoomId && newBooking.Date == Date)
             {
