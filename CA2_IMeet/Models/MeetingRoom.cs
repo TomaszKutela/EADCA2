@@ -25,7 +25,9 @@ namespace CA2_IMeet.Models
         [StringLength(30, ErrorMessage = "Location cannot be longer than 30 characters.")]
         public string Location { get; set; }
 
+        [DisplayFormat(NullDisplayText = "No Equipment")]
         public string Equipment { get; set; }
 
+        public virtual ICollection<Booking> Bookings { get; set; }
     }
 }
