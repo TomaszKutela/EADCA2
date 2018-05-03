@@ -168,12 +168,19 @@ namespace CA2_IMeet.Controllers
         {
             try
             {
-                MeetingRoom meetingRoom = db.MeetingRooms.Find(id);
-                //add try catch for if there is a booking in that room after today then don't delete 
-                //+ find out if bookings for that room will be deleted?
-                //Booking bookingUsingRoomInFuture = db.Bookings.Where(x => (x.RoomId = meetingRoom.RoomId) && (x.Date > DateTime.Now)) //or use exist?
-                db.MeetingRooms.Remove(meetingRoom);
-                db.SaveChanges();
+                MeetingRoom meetingRoomToDelete = db.MeetingRooms.Find(id);
+                //check if any meeting is happening in the room at a future date
+                Booking bookingUsingRoomInFuture = db.Bookings.FirstOrDefault(x => (x.RoomId == id) && (x.Date > DateTime.Now));
+                if (bookingUsingRoomInFuture == null)
+                {
+                    db.MeetingRooms.Remove(meetingRoomToDelete);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    TempData["msg"] = "<script>alert('This meeting room cannot be deleted as it has been booked for future meetings.');</script>";
+                }
+
             }
             catch (RetryLimitExceededException)
             {
@@ -181,6 +188,7 @@ namespace CA2_IMeet.Controllers
             }
             return RedirectToAction("Index");
         }
+
 
         protected override void Dispose(bool disposing)
         {
