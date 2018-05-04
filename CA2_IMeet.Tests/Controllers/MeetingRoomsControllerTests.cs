@@ -12,49 +12,101 @@ namespace CA2_IMeet.Tests.Controllers
         [TestMethod]
         public void Index(string sortOrder, string searchString)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+            // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
+            
         }
 
         [TestMethod]
         public void Details(string keyword)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+            // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
         [TestMethod]
         public void Create()
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+            // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
+
+
         [TestMethod]
         public void Create([Bind(Include = "Name,Size,Location,Equipment")] Models.MeetingRoom meetingRoom)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+
+            // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
 
         [TestMethod]
         public void Edit(int? id)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+            // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
 
         [TestMethod]
         public void EditPost(int? id)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+           // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
 
         [TestMethod]
         public void Delete(int? id, bool? saveChangesError = false)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+           // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
 
         [TestMethod]
         public void Delete(int id)
         {
-            MeetingRoomsController meetroomController = new MeetingRoomsController;
+           // Arrange
+            MeetingRoomsController meetroomController = new MeetingRoomsController();
+
+            // Act
+           
+
+            // Assert
         }
 
 */
-    }
 }
+
