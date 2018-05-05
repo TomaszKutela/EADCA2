@@ -41,7 +41,8 @@ namespace CA2_IMeet.Models
         [Display(Name = "Meeting Owner")]
         public string UserId { get; set; }
 
-        public bool IsRoomAvailableForBooking(Booking newBooking)
+        //method to check if room is not already booked on another booking
+        public bool IsValidBooking(Booking newBooking)
         {
             if (newBooking.RoomId == RoomId && newBooking.Date == Date)
             {
@@ -59,6 +60,5 @@ namespace CA2_IMeet.Models
                 return true;
             }
         }
-
     }
 }
