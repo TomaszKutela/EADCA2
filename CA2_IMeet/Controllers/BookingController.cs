@@ -12,14 +12,24 @@ using System.Data.Entity.Infrastructure;
 
 namespace CA2_IMeet.Controllers
 {
+    [Authorize]
     public class BookingController : Controller
     {
         private BookingContext db = new BookingContext();
 
-        // GET: Booking
+        // GET: Booking/ViewAllBookings
         public ActionResult ViewAllBookings()
         {
             var bookings = db.Bookings.Include(b => b.MeetingRoom);
+            return View(bookings.ToList());
+        }
+
+        // GET: Booking/ViewMyBookings
+        public ActionResult ViewMyBookings(string userId)
+        {
+            //****Fix route prefixing in MVC!!!!
+            //*******check here how to get current DATE!!!!!
+            var bookings = db.Bookings.Where(b => b.UserId == userId && b.Date >= DateTime.Now).Include(b => b.MeetingRoom);
             return View(bookings.ToList());
         }
 
@@ -39,9 +49,10 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: Booking/Create
-        public ActionResult Create()
+        public ActionResult Create(DateTime? pickedDate, DateTime? pickedStartTime, DateTime? pickedEndTime)
         {
-            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
+            //ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
+            //if pickedDate != null, check room availability then render partial view?
             return View();
         }
 
@@ -56,6 +67,16 @@ namespace CA2_IMeet.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //make sure room is still free
+                    foreach (Booking b in db.Bookings)
+                    {
+                        if (!b.IsValidBooking(booking))
+                        {
+                            ModelState.AddModelError("", "This room is not available any longer for booking. Please try to make another booking.");
+                            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
+                            return View(booking);
+                        }
+                    }
                     db.Bookings.Add(booking);
                     db.SaveChanges();
                     return RedirectToAction("ViewAllBookings");
@@ -102,7 +123,7 @@ namespace CA2_IMeet.Controllers
             var bookingToUpdate = db.Bookings.Find(id);
 
             if (TryUpdateModel(bookingToUpdate, "", 
-                new string[] { "MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime" }))
+                new string[] { "MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime", "UserId" }))
             {
                 try
                 {
@@ -156,6 +177,25 @@ namespace CA2_IMeet.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        //CHECK THIS!!
+        private List<MeetingRoom> FindAvailableRooms(DateTime date, DateTime startTime, DateTime endTime)
+        {
+            List<MeetingRoom> availableRooms = new List<MeetingRoom>();
+            IEnumerable<Booking> filteredBookings = db.Bookings.Where(b => b.Date == date);
+            foreach (MeetingRoom r in db.MeetingRooms)
+            {
+                filteredBookings = filteredBookings.Where(b => b.RoomId == r.RoomId);
+                foreach (Booking b in filteredBookings)
+                {
+                    if ((b.Start_DateTime > endTime) || (b.End_DateTime < startTime))
+                    {
+                        availableRooms.Add(r);
+                    }
+                }  
+            }
+            return availableRooms;
         }
     }
 }
