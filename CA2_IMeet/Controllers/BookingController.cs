@@ -12,7 +12,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace CA2_IMeet.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class BookingController : Controller
     {
         private BookingContext db = new BookingContext();
@@ -51,7 +51,11 @@ namespace CA2_IMeet.Controllers
         // GET: Booking/Create
         public ActionResult Create(DateTime? pickedDate, DateTime? pickedStartTime, DateTime? pickedEndTime)
         {
-            //ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
+            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
+            
+            PopulateStartTimeDropDownList(pickedStartTime);
+            PopulateEndTimeDropDownList(pickedEndTime);
+
             //if pickedDate != null, check room availability then render partial view?
             return View();
         }
@@ -67,6 +71,20 @@ namespace CA2_IMeet.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //change end and start date to match picked date
+                    booking.Start_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.Start_DateTime.Hour, 0, 1);
+                    booking.End_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.End_DateTime.Hour, 0, 0);
+
+                    //check that end time is after start time
+                    if (booking.Start_DateTime > booking.End_DateTime)
+                    {
+                        ModelState.AddModelError("", "Please check start and end times. A meeting cannot end before it starts.");
+                        ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
+                        PopulateStartTimeDropDownList(booking.Start_DateTime);
+                        PopulateEndTimeDropDownList(booking.End_DateTime);
+                        return View(booking);
+                    }
+
                     //make sure room is still free
                     foreach (Booking b in db.Bookings)
                     {
@@ -74,6 +92,8 @@ namespace CA2_IMeet.Controllers
                         {
                             ModelState.AddModelError("", "This room is not available any longer for booking. Please try to make another booking.");
                             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
+                            PopulateStartTimeDropDownList(booking.Start_DateTime);
+                            PopulateEndTimeDropDownList(booking.End_DateTime);
                             return View(booking);
                         }
                     }
@@ -87,6 +107,8 @@ namespace CA2_IMeet.Controllers
                 ModelState.AddModelError("", "Unable to save changes. Please try again, and if the problem persists, contact your system admistrator");
             }
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
+            PopulateStartTimeDropDownList(booking.Start_DateTime);
+            PopulateEndTimeDropDownList(booking.End_DateTime);
             return View(booking);
         }
 
@@ -106,6 +128,8 @@ namespace CA2_IMeet.Controllers
             {
                 return HttpNotFound();
             }
+            PopulateStartTimeDropDownList(booking.Start_DateTime);
+            PopulateEndTimeDropDownList(booking.End_DateTime);
             return View(booking);
         }
 
@@ -121,6 +145,9 @@ namespace CA2_IMeet.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var bookingToUpdate = db.Bookings.Find(id);
+            //change end and start date to match picked date
+            bookingToUpdate.Start_DateTime = new DateTime(bookingToUpdate.Date.Year, bookingToUpdate.Date.Month, bookingToUpdate.Date.Day, bookingToUpdate.Start_DateTime.Hour, 0, 1);
+            bookingToUpdate.End_DateTime = new DateTime(bookingToUpdate.Date.Year, bookingToUpdate.Date.Month, bookingToUpdate.Date.Day, bookingToUpdate.End_DateTime.Hour, 0, 0);
 
             if (TryUpdateModel(bookingToUpdate, "", 
                 new string[] { "MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime", "UserId" }))
@@ -136,7 +163,9 @@ namespace CA2_IMeet.Controllers
                 }
 
             }
-            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
+            //ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
+            PopulateStartTimeDropDownList(bookingToUpdate.Start_DateTime);
+            PopulateEndTimeDropDownList(bookingToUpdate.End_DateTime);
             return View(bookingToUpdate);
         }
 
@@ -196,6 +225,53 @@ namespace CA2_IMeet.Controllers
                 }  
             }
             return availableRooms;
+        }
+
+        //populate start time dropdown list
+        private void PopulateStartTimeDropDownList(DateTime? selectedStartTime = null)
+        {
+            List<SelectListItem> startTimes = new List<SelectListItem>();
+            DateTime date = DateTime.MinValue.AddHours(8); // start at 8am
+            DateTime endDate = DateTime.MinValue.AddHours(17); // end at 5pm
+            while (date < endDate)
+            {
+                //used for edits to pass on the time that was previously selected
+                bool selected = false;
+                if (selectedStartTime.HasValue)
+                {
+                    if (selectedStartTime.Value.Hour == date.Hour)
+                    {
+                        selected = true;
+                    }
+                }
+
+                startTimes.Add(new SelectListItem { Text = date.ToShortTimeString(), Value = date.ToString(), Selected = selected });
+                date = date.AddHours(1);
+            }
+            ViewBag.Start_DateTime = startTimes;
+        }
+
+        //populate end time dropdown list
+        private void PopulateEndTimeDropDownList(DateTime? selectedEndTime = null)
+        {
+            List<SelectListItem> endTimes = new List<SelectListItem>();
+            DateTime date = DateTime.MinValue.AddHours(9); // start at 8am
+            DateTime endDate = DateTime.MinValue.AddHours(17); // end at 5pm
+            while (date <= endDate)
+            {
+                //used for edits to pass on the time that was previously selected
+                bool selected = false;
+                if (selectedEndTime.HasValue)
+                {
+                    if (selectedEndTime.Value.Hour == date.Hour)
+                    {
+                        selected = true;
+                    }
+                }
+                endTimes.Add(new SelectListItem { Text = date.ToShortTimeString(), Value = date.ToString(), Selected = selected });
+                date = date.AddHours(1);
+            }
+            ViewBag.End_DateTime = endTimes;
         }
     }
 }
