@@ -71,6 +71,16 @@ namespace CA2_IMeet.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //check that the picked date is not a weekend
+                    if (booking.Date.DayOfWeek == DayOfWeek.Saturday || booking.Date.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        ModelState.AddModelError("", "Meetings cannot happen at the weekend. Please pick another date.");
+                        ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
+                        PopulateStartTimeDropDownList(booking.Start_DateTime);
+                        PopulateEndTimeDropDownList(booking.End_DateTime);
+                        return View(booking);
+                    }
+                    
                     //change end and start date to match picked date
                     booking.Start_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.Start_DateTime.Hour, 0, 1);
                     booking.End_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.End_DateTime.Hour, 0, 0);
