@@ -124,7 +124,7 @@ namespace CA2_IMeet.Controllers
 
                     db.Bookings.Add(booking);
                     db.SaveChanges();
-                    return RedirectToAction("ViewAllBookings");
+                    return RedirectToAction("Index");
                 }
             }
             catch (RetryLimitExceededException)
@@ -156,18 +156,13 @@ namespace CA2_IMeet.Controllers
             //check if the booking is from the user logged in ***unless he is an admin***
             //try
             //{
-            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserId())
+            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
             //    {
             //        throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot edit it.");
             //    }
-            //}
-            //catch (UnauthorizedAccessException ex)
-            //{
-            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Edit"));
-            //}
-
             //using a viewmodel to pass on data from controller to view then to controller again when posting
-            BookingViewModel vm = new BookingViewModel {
+            BookingViewModel vm = new BookingViewModel
+            {
                 BookingId = booking.BookingId,
                 Date = booking.Date,
                 MeetingReference = booking.MeetingReference,
@@ -178,6 +173,11 @@ namespace CA2_IMeet.Controllers
             PopulateStartTimeDropDownList(booking.Start_DateTime);
             PopulateEndTimeDropDownList(booking.End_DateTime);
             return View(vm);
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Edit"));
+            //}
         }
 
         // POST: Booking/Edit/5
@@ -222,7 +222,7 @@ namespace CA2_IMeet.Controllers
                             try
                             {
                                 db.SaveChanges();
-                                return RedirectToAction("ViewAllBookings");
+                                return RedirectToAction("Index");
                             }
                             catch (RetryLimitExceededException)
                             {
@@ -264,9 +264,21 @@ namespace CA2_IMeet.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Booking booking = db.Bookings.Find(id);
+            //check if the booking is from the user logged in ***unless he is an admin***
+            //try
+            //{
+            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
+            //    {
+            //        throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot delete it.");
+            //    }
             db.Bookings.Remove(booking);
             db.SaveChanges();
-            return RedirectToAction("ViewAllBookings");
+            return RedirectToAction("Index");
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Index"));
+            //}
         }
 
         protected override void Dispose(bool disposing)
