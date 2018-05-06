@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using CA2_IMeet.DAL;
 using CA2_IMeet.Models;
 using System.Data.Entity.Infrastructure;
+using Microsoft.AspNet.Identity;
 
 namespace CA2_IMeet.Controllers
 {
@@ -17,20 +18,21 @@ namespace CA2_IMeet.Controllers
     {
         private BookingContext db = new BookingContext();
 
-        // GET: Booking/ViewAllBookings
-        public ActionResult ViewAllBookings()
+        // GET: Booking/Index
+        public ActionResult Index()
         {
-            var bookings = db.Bookings.Include(b => b.MeetingRoom);
-            return View(bookings.ToList());
-        }
+            IEnumerable<Booking> bookingsToShow;
+            //if (User.IsInRole("Admin"))
+            //{
+                bookingsToShow = db.Bookings.Where(b => b.Date >= DateTime.Now).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime);
+            //}
+            //else
+            //{
+            //string user_id = User.Identity.GetUserId();
+            //bookingsToShow = db.Bookings.Where(b => b.UserId == user_id && b.Date >= DateTime.Now).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime);
+            //}
 
-        // GET: Booking/ViewMyBookings
-        public ActionResult ViewMyBookings(string userId)
-        {
-            //****Fix route prefixing in MVC!!!!
-            //*******check here how to get current DATE!!!!!
-            var bookings = db.Bookings.Where(b => b.UserId == userId && b.Date >= DateTime.Now).Include(b => b.MeetingRoom);
-            return View(bookings.ToList());
+            return View(bookingsToShow.ToList());
         }
 
         // GET: Booking/Details/5
@@ -52,17 +54,28 @@ namespace CA2_IMeet.Controllers
         public ActionResult Create(DateTime? pickedDate, DateTime? pickedStartTime, DateTime? pickedEndTime)
         {
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
-            
             PopulateStartTimeDropDownList(pickedStartTime);
             PopulateEndTimeDropDownList(pickedEndTime);
 
-            //if pickedDate != null, check room availability then render partial view?
+            if (pickedDate == null && pickedStartTime == null && pickedEndTime == null)
+            {
+                ViewBag.NoPick = true;
+            }
+            else if (pickedDate.HasValue && pickedStartTime.HasValue && pickedEndTime.HasValue)
+            {
+                ViewBag.NoPick = false;
+                pickedStartTime = new DateTime(pickedDate.Value.Date.Year, pickedDate.Value.Date.Month, pickedDate.Value.Date.Day, pickedStartTime.Value.Hour, 0, 1);
+                pickedEndTime = new DateTime(pickedDate.Value.Date.Year, pickedDate.Value.Date.Month, pickedDate.Value.Date.Day, pickedEndTime.Value.Hour, 0, 0);
+                FindAvailableRooms(pickedDate.Value, pickedStartTime.Value, pickedEndTime.Value);
+            }
+            else
+            {
+                ViewBag.NoPick = false;
+            }
             return View();
         }
 
         // POST: Booking/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MeetingReference, RoomId, Date, Start_DateTime, End_DateTime")] Booking booking)
@@ -85,8 +98,8 @@ namespace CA2_IMeet.Controllers
                     booking.Start_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.Start_DateTime.Hour, 0, 1);
                     booking.End_DateTime = new DateTime(booking.Date.Year, booking.Date.Month, booking.Date.Day, booking.End_DateTime.Hour, 0, 0);
 
-                    //check that end time is after start time
-                    if (booking.Start_DateTime > booking.End_DateTime)
+                    //check that end time is after start time and that start time and end time are different
+                    if (booking.Start_DateTime >= booking.End_DateTime)
                     {
                         ModelState.AddModelError("", "Please check start and end times. A meeting cannot end before it starts.");
                         ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
@@ -107,6 +120,8 @@ namespace CA2_IMeet.Controllers
                             return View(booking);
                         }
                     }
+                    //assign user ID!! TO DO
+
                     db.Bookings.Add(booking);
                     db.SaveChanges();
                     return RedirectToAction("ViewAllBookings");
@@ -138,9 +153,31 @@ namespace CA2_IMeet.Controllers
             {
                 return HttpNotFound();
             }
+            //check if the booking is from the user logged in ***unless he is an admin***
+            //try
+            //{
+            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserId())
+            //    {
+            //        throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot edit it.");
+            //    }
+            //}
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Edit"));
+            //}
+
+            //using a viewmodel to pass on data from controller to view then to controller again when posting
+            BookingViewModel vm = new BookingViewModel {
+                BookingId = booking.BookingId,
+                Date = booking.Date,
+                MeetingReference = booking.MeetingReference,
+                Start_DateTime = booking.Start_DateTime,
+                End_DateTime = booking.End_DateTime
+            };
+
             PopulateStartTimeDropDownList(booking.Start_DateTime);
             PopulateEndTimeDropDownList(booking.End_DateTime);
-            return View(booking);
+            return View(vm);
         }
 
         // POST: Booking/Edit/5
@@ -148,35 +185,58 @@ namespace CA2_IMeet.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPost(int? id)
+        public ActionResult EditPost(BookingViewModel vm)
         {
-            if (id == null)
+            if (vm == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var bookingToUpdate = db.Bookings.Find(id);
-            //change end and start date to match picked date
-            bookingToUpdate.Start_DateTime = new DateTime(bookingToUpdate.Date.Year, bookingToUpdate.Date.Month, bookingToUpdate.Date.Day, bookingToUpdate.Start_DateTime.Hour, 0, 1);
-            bookingToUpdate.End_DateTime = new DateTime(bookingToUpdate.Date.Year, bookingToUpdate.Date.Month, bookingToUpdate.Date.Day, bookingToUpdate.End_DateTime.Hour, 0, 0);
+            Booking bookingToUpdate = db.Bookings.Find(vm.BookingId.Value);
 
-            if (TryUpdateModel(bookingToUpdate, "", 
-                new string[] { "MeetingReference", "RoomId", "Date", "Start_DateTime", "End_DateTime", "UserId" }))
+            //check valid times
+            if (vm.InvalidStartAndEnd())
             {
-                try
-                {
-                    db.SaveChanges();
-                    return RedirectToAction("ViewAllBookings");
-                }
-                catch (RetryLimitExceededException)
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
-                }
-
+                ModelState.AddModelError("", "Please check start and end times. A meeting cannot end before it starts.");
             }
-            //ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
-            PopulateStartTimeDropDownList(bookingToUpdate.Start_DateTime);
-            PopulateEndTimeDropDownList(bookingToUpdate.End_DateTime);
-            return View(bookingToUpdate);
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    //assign vm values to booking
+                    bookingToUpdate.MeetingReference = vm.MeetingReference;
+                    bookingToUpdate.Date = vm.Date;
+                    bookingToUpdate.Start_DateTime = vm.Start_DateTime;
+                    bookingToUpdate.End_DateTime = vm.End_DateTime;
+
+                    List<Booking> checkSet = db.Bookings.ToList();
+                    checkSet.Remove(bookingToUpdate);
+                    //make sure room is free
+                    foreach (Booking b in checkSet)
+                    {
+                        if (!b.IsValidBooking(bookingToUpdate))
+                        {
+                            ModelState.AddModelError("", "This room is not available any longer for booking. Please try to make another booking.");
+                        }
+                        else
+                        {
+                            try
+                            {
+                                db.SaveChanges();
+                                return RedirectToAction("ViewAllBookings");
+                            }
+                            catch (RetryLimitExceededException)
+                            {
+                                ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
+                            }
+                        }
+                    }                 
+                }
+            }
+            
+            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
+            PopulateStartTimeDropDownList(vm.Start_DateTime);
+            PopulateEndTimeDropDownList(vm.End_DateTime);
+            return View(vm);
         }
 
         // GET: Booking/Delete/5
@@ -218,23 +278,20 @@ namespace CA2_IMeet.Controllers
             base.Dispose(disposing);
         }
 
-        //CHECK THIS!!
-        private List<MeetingRoom> FindAvailableRooms(DateTime date, DateTime startTime, DateTime endTime)
+        //Find Available Rooms when date and time are picked
+        private void FindAvailableRooms(DateTime date, DateTime startTime, DateTime endTime)
         {
-            List<MeetingRoom> availableRooms = new List<MeetingRoom>();
-            IEnumerable<Booking> filteredBookings = db.Bookings.Where(b => b.Date == date);
+            List<MeetingRoom> availableRooms = db.MeetingRooms.ToList();
+            IEnumerable<Booking> filteredBookings = db.Bookings.Where(b => b.Date == date).ToList();
             foreach (MeetingRoom r in db.MeetingRooms)
             {
-                filteredBookings = filteredBookings.Where(b => b.RoomId == r.RoomId);
-                foreach (Booking b in filteredBookings)
+                filteredBookings = filteredBookings.Where(b => b.RoomId == r.RoomId).ToList();
+                if (filteredBookings.Any(b => (!((b.Start_DateTime > endTime) || (b.End_DateTime < startTime)))))
                 {
-                    if ((b.Start_DateTime > endTime) || (b.End_DateTime < startTime))
-                    {
-                        availableRooms.Add(r);
-                    }
-                }  
+                    availableRooms.Remove(r);
+                }
             }
-            return availableRooms;
+            ViewBag.AvailableRooms = availableRooms;
         }
 
         //populate start time dropdown list

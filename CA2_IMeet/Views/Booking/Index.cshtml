@@ -1,0 +1,66 @@
+﻿@using CA2_IMeet.Models
+@model IEnumerable<Booking>
+
+
+@{
+    ViewBag.Title = "Index";
+    var trClass = HttpContext.Current.User.IsInRole("Admin") ? "" : "hidden";
+}
+
+<h2>Your Future Bookings</h2>
+
+<p>
+    @Html.ActionLink("Create New Booking", "Create")
+</p>
+
+@if (Model.Count() > 0)
+{
+<table class="table">
+    <tr>    
+        <th>
+            @Html.DisplayNameFor(model => model.MeetingReference)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            Timeslot
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MeetingRoom.Name)
+        </th>
+        <th class="@trClass">
+            @Html.DisplayNameFor(model => model.UserId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (Booking item in Model) {
+    <tr>      
+        <td>
+            @Html.DisplayFor(modelItem => item.MeetingReference)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @item.Start_DateTime.ToShortTimeString()&ensp;–&ensp;@item.End_DateTime.ToShortTimeString()
+        </td>
+        <td>
+            @Html.ActionLink(@item.MeetingRoom.Name, "Details", "MeetingRooms", new { keyword = item.MeetingRoom.Name }, null)
+        </td>
+        <td class="@trClass">
+            @Html.DisplayFor(modelItem => item.UserId)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.BookingId }) |
+            @Html.ActionLink("Cancel", "Delete", new { id=item.BookingId })
+        </td>
+    </tr>
+}
+</table>
+}
+else
+{
+    <h3>You do not have any booking for future meetings.</h3>
+}
