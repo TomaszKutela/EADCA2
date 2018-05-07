@@ -13,7 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace CA2_IMeet.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class BookingController : Controller
     {
         private BookingContext db = new BookingContext();
@@ -22,17 +22,17 @@ namespace CA2_IMeet.Controllers
         public ActionResult Index()
         {
             IEnumerable<Booking> bookingsToShow;
-            //if (User.IsInRole("Admin"))
-            //{
-                bookingsToShow = db.Bookings.Where(b => b.Date >= DateTime.Now).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime);
-            //}
-            //else
-            //{
-            //string user_id = User.Identity.GetUserId();
-            //bookingsToShow = db.Bookings.Where(b => b.UserId == user_id && b.Date >= DateTime.Now).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime);
-            //}
+            if (User.IsInRole("Admin"))
+            {
+                bookingsToShow = db.Bookings.Where(b => b.Date >= DateTime.Today).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime).ToList();
+            }
+            else
+            {
+                string user_id = User.Identity.GetUserName();
+                bookingsToShow = db.Bookings.Where(b => b.UserId == user_id).Where(b => b.Date >= DateTime.Today).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime).ToList();
+            }
 
-            return View(bookingsToShow.ToList());
+            return View(bookingsToShow);
         }
 
         //// GET: Booking/Details/5
@@ -88,9 +88,8 @@ namespace CA2_IMeet.Controllers
                         Date = vm.Date,
                         Start_DateTime = vm.Start_DateTime,
                         End_DateTime = vm.End_DateTime,
-                        //UserId = User.Identity.GetUserName() **here are in CreatePost??***
                     };
-
+                    ViewBag.Username = User.Identity.GetUserName();
                     ViewBag.AvailableRooms = availableRooms;
                     ViewBag.RoomId = new SelectList(availableRooms, "RoomId", "Name");
                     return View(newBooking);
@@ -104,11 +103,10 @@ namespace CA2_IMeet.Controllers
         // POST: Booking/CreatePost
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreatePost([Bind(Include = "MeetingReference, RoomId, Date, Start_DateTime, End_DateTime")] Booking booking)
+        public ActionResult CreatePost([Bind(Include = "MeetingReference, RoomId, Date, Start_DateTime, End_DateTime, UserId")] Booking booking)
         {
             try
             {
-                //booking.UserId = User.Identity.GetUserName();
                 if (ModelState.IsValid)
                 {
                     //make sure room is still free
@@ -122,7 +120,6 @@ namespace CA2_IMeet.Controllers
                             return View("Create", new { Date = booking.Date});
                         }
                     }
-
                     db.Bookings.Add(booking);
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -151,14 +148,14 @@ namespace CA2_IMeet.Controllers
                 return HttpNotFound();
             }
             //check if the booking is from the user logged in ***unless he is an admin***
-            //try
-            //{
-            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
-            //    {
-            //        throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot edit it.");
-            //    }
-            //using a viewmodel to pass on data from controller to view then to controller again when posting
-            BookingEditViewModel vm = new BookingEditViewModel
+            try
+            {
+                if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
+                {
+                    throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot edit it.");
+                }
+                //using a viewmodel to pass on data from controller to view then to controller again when posting
+                BookingEditViewModel vm = new BookingEditViewModel
             {
                 BookingId = booking.BookingId,
                 Date = booking.Date,
@@ -171,11 +168,11 @@ namespace CA2_IMeet.Controllers
             PopulateStartTimeDropDownList(booking.Start_DateTime);
             PopulateEndTimeDropDownList(booking.End_DateTime);
             return View(vm);
-            //}
-            //catch (UnauthorizedAccessException ex)
-            //{
-            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Edit"));
-            //}
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Edit"));
+            }
         }
 
         // POST: Booking/Edit/5
@@ -200,41 +197,44 @@ namespace CA2_IMeet.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //create set of existing bookings
+                    List<Booking> checkSet = db.Bookings.ToList();
+                    checkSet.Remove(bookingToUpdate);
+
                     //assign vm values to booking
                     bookingToUpdate.MeetingReference = vm.MeetingReference;
                     bookingToUpdate.Date = vm.Date;
                     bookingToUpdate.Start_DateTime = vm.Start_DateTime;
                     bookingToUpdate.End_DateTime = vm.End_DateTime;
+                    bookingToUpdate.RoomId = vm.RoomId;
 
-                    List<Booking> checkSet = db.Bookings.ToList();
-                    checkSet.Remove(bookingToUpdate);
-                    //make sure room is free
+                    //make sure room is free                    
                     foreach (Booking b in checkSet)
                     {
                         if (!b.IsValidBooking(bookingToUpdate))
                         {
-                            ModelState.AddModelError("", "This room is not available any longer for booking. Please try to make another booking.");
+                            ModelState.AddModelError("", "The selected room is not available at the selected date and times. Please try to make another booking.");
+                            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
+                            PopulateStartTimeDropDownList(bookingToUpdate.Start_DateTime);
+                            PopulateEndTimeDropDownList(bookingToUpdate.End_DateTime);
+                            return View("Edit", vm);
                         }
-                        else
-                        {
-                            try
-                            {
-                                db.SaveChanges();
-                                return RedirectToAction("Index");
-                            }
-                            catch (RetryLimitExceededException)
-                            {
-                                ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
-                            }
-                        }
-                    }                 
+                    }
+                    try
+                    {
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    catch (RetryLimitExceededException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Please try again. If problem persists, contact your system administrator.");
+                    }
                 }
             }
-            
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", bookingToUpdate.RoomId);
             PopulateStartTimeDropDownList(vm.Start_DateTime);
             PopulateEndTimeDropDownList(vm.End_DateTime);
-            return View(vm);
+            return View("Edit", vm);
         }
 
         // GET: Booking/Delete/5
@@ -263,20 +263,20 @@ namespace CA2_IMeet.Controllers
         {
             Booking booking = db.Bookings.Find(id);
             //check if the booking is from the user logged in ***unless he is an admin***
-            //try
-            //{
-            //    if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
-            //    {
-            //        throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot delete it.");
-            //    }
-            db.Bookings.Remove(booking);
+            try
+            {
+                if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())
+                {
+                    throw new UnauthorizedAccessException("Oops, this booking doesn't seem to be yours, you cannot delete it.");
+                }
+                db.Bookings.Remove(booking);
             db.SaveChanges();
             return RedirectToAction("Index");
-            //}
-            //catch (UnauthorizedAccessException ex)
-            //{
-            //    return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Index"));
-            //}
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return View("NotAuthorizedError", new HandleErrorInfo(ex, "Booking", "Index"));
+            }
         }
 
         protected override void Dispose(bool disposing)

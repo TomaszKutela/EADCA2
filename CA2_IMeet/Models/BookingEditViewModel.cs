@@ -20,6 +20,10 @@ namespace CA2_IMeet.Models
         [Display(Name = "Meeting Title")]
         public string MeetingReference { get; set; }
 
+        [Required]
+        [Display(Name = "Room")]
+        public int RoomId { get; set; }
+
         //[Required(ErrorMessage = "Indicate meeting date.")]
         //[DataType(DataType.Date)]   
         //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
