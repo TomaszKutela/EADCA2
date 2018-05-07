@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace CA2_IMeet.Models
 {
-    public class BookingViewModel
+    public class BookingCreateViewModel
     {
         private DateTime start_DateTime;
         private DateTime end_DateTime;
@@ -15,16 +15,11 @@ namespace CA2_IMeet.Models
         [HiddenInput]
         public int? BookingId { get; set; }
 
-        [Required(ErrorMessage = "Indicate Meeting Reference.")]
-        [StringLength(55, ErrorMessage = "Meeting Title cannot be longer than 55 characters.")]
-        [Display(Name = "Meeting Title")]
-        public string MeetingReference { get; set; }
-
         [Required(ErrorMessage = "Indicate meeting date.")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Weekdays]
         [InFuture]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Indicate when meeting starts.")]

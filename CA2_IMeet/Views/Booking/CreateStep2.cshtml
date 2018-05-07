@@ -1,0 +1,126 @@
+﻿@model CA2_IMeet.Models.Booking
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Complete Booking</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.MeetingReference, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MeetingReference, new { htmlAttributes = new { @class = "form-control", @autofocus = "autofocus" } })
+                @Html.ValidationMessageFor(model => model.MeetingReference, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Start_DateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Start_DateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Start_DateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.End_DateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.End_DateTime, new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.EditorFor(model => model.End_DateTime, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @disabled="disabled"} })*@
+                @Html.ValidationMessageFor(model => model.End_DateTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group hidden">
+            @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoomId, "RoomId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("RoomId", null, htmlAttributes: new { @class = "form-control" })
+                <small id="roomHelpBlock" class="form-text text-muted">
+                    See below for meeting room information.
+                </small>
+                @Html.ValidationMessageFor(model => model.RoomId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create Meeting" class="btn btn-primary" formaction=@Url.Action("CreatePost", Model) />
+                &emsp;
+                <input type="submit" value="Change Date/Times" class="btn btn-default" formaction=@Url.Action("Create", new { Date = Model.Date, End_DateTime = Model.End_DateTime, Start_DateTime = Model.Start_DateTime }) />
+            </div>
+        </div>
+    </div>
+}
+
+<hr />
+
+<div>
+    <h3>Available Meeting Rooms</h3>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(r => r.MeetingRoom.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(r => r.MeetingRoom.Size)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(r => r.MeetingRoom.Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(r => r.MeetingRoom.Equipment)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (CA2_IMeet.Models.MeetingRoom item in ViewBag.AvailableRooms)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Size)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Equipment)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
