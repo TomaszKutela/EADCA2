@@ -170,7 +170,7 @@ namespace CA2_IMeet.Controllers
             {
                 MeetingRoom meetingRoomToDelete = db.MeetingRooms.Find(id);
                 //check if any meeting is happening in the room at a future date
-                Booking bookingUsingRoomInFuture = db.Bookings.FirstOrDefault(x => (x.RoomId == id) && (x.Date > DateTime.Now));
+                Booking bookingUsingRoomInFuture = db.Bookings.FirstOrDefault(x => (x.RoomId == id) && (x.Date >= DateTime.Today));
                 if (bookingUsingRoomInFuture == null)
                 {
                     db.MeetingRooms.Remove(meetingRoomToDelete);
