@@ -23,6 +23,7 @@ namespace CA2_IMeet.Models
         [Required(ErrorMessage = "Indicate meeting date.")]
         [DataType(DataType.Date)]
         [Weekdays]
+        [InFuture]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 

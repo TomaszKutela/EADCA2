@@ -271,13 +271,14 @@
     <Content Include="Views\MeetingRooms\Details.cshtml" />
     <Content Include="Views\MeetingRooms\Edit.cshtml" />
     <Content Include="Views\MeetingRooms\Index.cshtml" />
-    <Content Include="Views\Booking\Create.cshtml" />
+    <Content Include="Views\Booking\CreateTrouble.cshtml" />
     <Content Include="Views\Booking\Delete.cshtml" />
     <Content Include="Views\Booking\Details.cshtml" />
     <Content Include="Views\Booking\Edit.cshtml" />
     <Content Include="Views\Booking\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
     <Content Include="Views\Shared\NotAuthorizedError.cshtml" />
+    <Content Include="Views\Booking\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

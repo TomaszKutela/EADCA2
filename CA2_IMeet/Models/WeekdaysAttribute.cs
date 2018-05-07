@@ -24,4 +24,23 @@ namespace CA2_IMeet.Models
             return result;
         }
     }
+
+    public class InFutureAttribute : ValidationAttribute
+    {
+        public InFutureAttribute()
+        {
+            this.ErrorMessage = "The selected date must be in the future.";
+        }
+
+        public override bool IsValid(object value)
+        {
+            DateTime date = (DateTime)value;
+            bool result = true;
+            if (date < DateTime.Today)
+            {
+                result = false;
+            }
+            return result;
+        }
+    }
 }

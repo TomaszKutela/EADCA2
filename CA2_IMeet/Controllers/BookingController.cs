@@ -51,28 +51,23 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: Booking/Create
-        public ActionResult Create(DateTime? pickedDate, DateTime? pickedStartTime, DateTime? pickedEndTime)
+        public ActionResult Create()
         {
             ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
-            PopulateStartTimeDropDownList(pickedStartTime);
-            PopulateEndTimeDropDownList(pickedEndTime);
-
-            if (pickedDate == null && pickedStartTime == null && pickedEndTime == null)
-            {
-                ViewBag.NoPick = true;
-            }
-            else if (pickedDate.HasValue && pickedStartTime.HasValue && pickedEndTime.HasValue)
-            {
-                ViewBag.NoPick = false;
-                pickedStartTime = new DateTime(pickedDate.Value.Date.Year, pickedDate.Value.Date.Month, pickedDate.Value.Date.Day, pickedStartTime.Value.Hour, 0, 1);
-                pickedEndTime = new DateTime(pickedDate.Value.Date.Year, pickedDate.Value.Date.Month, pickedDate.Value.Date.Day, pickedEndTime.Value.Hour, 0, 0);
-                FindAvailableRooms(pickedDate.Value, pickedStartTime.Value, pickedEndTime.Value);
-            }
-            else
-            {
-                ViewBag.NoPick = false;
-            }
+            PopulateStartTimeDropDownList();
+            PopulateEndTimeDropDownList();
             return View();
+        }
+
+        // GET: Booking/Create
+        public ActionResult CreateStep2(BookingViewModel mv)
+        {
+            //if ModelState.IsValid !!! CHECK!! sinon retourne a l'ecran precedent!
+
+            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name");
+            PopulateStartTimeDropDownList(mv.Start_DateTime);
+            PopulateEndTimeDropDownList(mv.End_DateTime);
+            return View(mv);
         }
 
         // POST: Booking/Create
@@ -141,9 +136,6 @@ namespace CA2_IMeet.Controllers
         // GET: Booking/Edit/5
         public ActionResult Edit(int? id)
         {
-            SelectList roomslist = new SelectList(db.MeetingRooms.ToList(), "RoomId", "Name", db.MeetingRooms);
-            ViewData["Names"] = roomslist;
-
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -170,6 +162,7 @@ namespace CA2_IMeet.Controllers
                 End_DateTime = booking.End_DateTime
             };
 
+            ViewBag.RoomId = new SelectList(db.MeetingRooms, "RoomId", "Name", booking.RoomId);
             PopulateStartTimeDropDownList(booking.Start_DateTime);
             PopulateEndTimeDropDownList(booking.End_DateTime);
             return View(vm);
