@@ -12,6 +12,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace CA2_IMeet.Controllers
 {
+    [Authorize]
     public class MeetingRoomsController : Controller
     {
         private BookingContext db = new BookingContext();
@@ -62,6 +63,7 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: MeetingRooms/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -70,6 +72,7 @@ namespace CA2_IMeet.Controllers
         // POST: MeetingRooms/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Name,Size,Location,Equipment")] MeetingRoom meetingRoom)
@@ -99,6 +102,7 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: MeetingRooms/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -116,6 +120,7 @@ namespace CA2_IMeet.Controllers
         // POST: MeetingRooms/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(int? id)
@@ -143,6 +148,7 @@ namespace CA2_IMeet.Controllers
         }
 
         // GET: MeetingRooms/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
@@ -162,6 +168,7 @@ namespace CA2_IMeet.Controllers
         }
 
         // POST: MeetingRooms/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id)
@@ -170,7 +177,7 @@ namespace CA2_IMeet.Controllers
             {
                 MeetingRoom meetingRoomToDelete = db.MeetingRooms.Find(id);
                 //check if any meeting is happening in the room at a future date
-                Booking bookingUsingRoomInFuture = db.Bookings.FirstOrDefault(x => (x.RoomId == id) && (x.Date > DateTime.Now));
+                Booking bookingUsingRoomInFuture = db.Bookings.FirstOrDefault(x => (x.RoomId == id) && (x.Date >= DateTime.Today));
                 if (bookingUsingRoomInFuture == null)
                 {
                     db.MeetingRooms.Remove(meetingRoomToDelete);

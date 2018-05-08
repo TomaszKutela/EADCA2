@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace CA2_IMeet.Controllers
 {
-    [RequireHttps]
+    //[RequireHttps]
     public class HomeController : Controller
     {
         public ActionResult Index()

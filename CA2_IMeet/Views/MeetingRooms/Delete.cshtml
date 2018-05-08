@@ -4,11 +4,12 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete a Meeting Room</h2>
 <p class="error">@ViewBag.ErrorMessage</p>
-<h3>Are you sure you want to delete this Meeting Room?</h3>
-<h3>You will not be able to delete a meeting room with future bookings</h3>
+<h2>Are you sure you want to <strong>delete</strong> this Meeting Room?</h2>
+<h5 class="text-muted">You will not be able to delete a meeting room with future bookings</h5>
+<h5 class="text-warning">Once deleted, this action cannot be undone.</h5>
 <div>
+    <br />
     <h4>Meeting Room Details</h4>
     <hr />
     <dl class="dl-horizontal">
@@ -50,7 +51,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-primary" /> |
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

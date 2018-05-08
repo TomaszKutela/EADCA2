@@ -38,6 +38,7 @@ namespace CA2_IMeet.Models
         [Display(Name = "End Time")]
         public DateTime End_DateTime { get; set; }
 
+        [Required]
         [Display(Name = "Meeting Owner")]
         public string UserId { get; set; }
 

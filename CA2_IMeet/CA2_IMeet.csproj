@@ -202,9 +202,12 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\BookingCreateViewModel.cs" />
+    <Compile Include="Models\BookingEditViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MeetingRoom.cs" />
+    <Compile Include="Models\AttributeValidation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -269,13 +272,14 @@
     <Content Include="Views\MeetingRooms\Details.cshtml" />
     <Content Include="Views\MeetingRooms\Edit.cshtml" />
     <Content Include="Views\MeetingRooms\Index.cshtml" />
-    <Content Include="Views\Booking\Create.cshtml" />
+    <Content Include="Views\Booking\CreateStep2.cshtml" />
     <Content Include="Views\Booking\Delete.cshtml" />
     <Content Include="Views\Booking\Details.cshtml" />
     <Content Include="Views\Booking\Edit.cshtml" />
-    <Content Include="Views\Booking\ViewAllBookings.cshtml" />
-    <Content Include="Views\Booking\ViewMyBookings.cshtml" />
+    <Content Include="Views\Booking\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
+    <Content Include="Views\Shared\NotAuthorizedError.cshtml" />
+    <Content Include="Views\Booking\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
