@@ -16,7 +16,7 @@ namespace CA2_IMeet.Controllers
     public class MeetingRoomsController : Controller
     {
         private BookingContext db = new BookingContext();
-
+        
         // GET: MeetingRooms
         public ActionResult Index(string sortOrder, string searchString)
         {
@@ -48,6 +48,7 @@ namespace CA2_IMeet.Controllers
             return View(rooms.ToList());
         }
 
+        // GET: MeetingRooms/Details/{keyword}
         public ActionResult Details(string keyword)
         {
             if (String.IsNullOrEmpty(keyword))
@@ -62,7 +63,7 @@ namespace CA2_IMeet.Controllers
             return View(meetingRoom);
         }
 
-        // GET: MeetingRooms/Create
+        // GET: MeetingRooms/Create/{ }
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
