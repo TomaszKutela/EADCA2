@@ -10,6 +10,7 @@ using CA2_IMeet.DAL;
 using CA2_IMeet.Models;
 using System.Data.Entity.Infrastructure;
 using Microsoft.AspNet.Identity;
+using System.Globalization;
 
 namespace CA2_IMeet.Controllers
 {
@@ -305,6 +306,21 @@ namespace CA2_IMeet.Controllers
                 }
             }
             return availableRooms;
+        }
+
+        //method that can be called from client console app
+        [AllowAnonymous]
+        public JsonResult GetAvailableRooms(string _date, string _startTime, string _endTime)
+        {
+            DateTime date = DateTime.ParseExact(_date, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            DateTime startTime = DateTime.ParseExact(_startTime, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            DateTime endTime = DateTime.ParseExact(_endTime, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+            //to avoid error 'circular reference was detected while serializing an object of type System.Data.Entity.DynamicProxies.MeetingRoom'
+            db.Configuration.ProxyCreationEnabled = false;
+            List<MeetingRoom> freeRooms = FindAvailableRooms(date, startTime, endTime);
+
+            return Json(freeRooms, JsonRequestBehavior.AllowGet);
         }
 
         //populate start time dropdown list
