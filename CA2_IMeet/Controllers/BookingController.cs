@@ -147,7 +147,7 @@ namespace CA2_IMeet.Controllers
             {
                 return HttpNotFound();
             }
-            //check if the booking is from the user logged in ***unless he is an admin***
+            //check if the booking is from the user logged in unless he is an admin
             try
             {
                 if (!User.IsInRole("Admin") && booking.UserId != User.Identity.GetUserName())

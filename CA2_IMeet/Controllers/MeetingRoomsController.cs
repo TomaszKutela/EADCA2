@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using CA2_IMeet.DAL;
 using CA2_IMeet.Models;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 
 namespace CA2_IMeet.Controllers
 {
@@ -63,7 +64,7 @@ namespace CA2_IMeet.Controllers
             return View(meetingRoom);
         }
 
-        // GET: MeetingRooms/Create/{ }
+        // GET: MeetingRooms/Create
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
@@ -98,7 +99,6 @@ namespace CA2_IMeet.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
-
             return View(meetingRoom);
         }
 
@@ -130,15 +130,26 @@ namespace CA2_IMeet.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             var roomToUpdate = db.MeetingRooms.Find(id);
-            if (TryUpdateModel(roomToUpdate, "",
-               new string[] { "Name", "Size", "Location", "Equipment" }))
+            string oldName = roomToUpdate.Name;
+            List<string> checkSet = db.MeetingRooms.Select(m => m.Name).ToList();
+
+            if (TryUpdateModel(roomToUpdate, "", new string[] { "Name", "Size", "Location", "Equipment" }))
             {
                 try
                 {
-                    db.SaveChanges();
-
-                    return RedirectToAction("Index");
+                    //check that a room with same name does not already exists if name is being changed
+                    string newName = roomToUpdate.Name;
+                    if (newName != oldName && checkSet.Contains(newName))
+                    {
+                        ModelState.AddModelError("", "A meeting room with the same name already exists.");                    
+                    }
+                    else
+                    {
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }                  
                 }
                 catch (RetryLimitExceededException)
                 {
