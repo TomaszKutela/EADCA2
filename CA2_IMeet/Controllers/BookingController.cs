@@ -36,20 +36,6 @@ namespace CA2_IMeet.Controllers
             return View(bookingsToShow);
         }
 
-        //// GET: Booking/Details/5
-        //public ActionResult Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Booking booking = db.Bookings.Find(id);
-        //    if (booking == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(booking);
-        //}
 
         // GET: Booking/Create
         //Used to Collect Criteria to Find Room
