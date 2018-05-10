@@ -9,7 +9,7 @@ namespace CA2_IMeet.Tests.Controllers
     [TestClass]
     public class BookingControllerTests
     {
-
+        /*
         [TestMethod]
         public void ViewAllBookings()
         {
@@ -33,7 +33,7 @@ namespace CA2_IMeet.Tests.Controllers
             return View(bookingsToShow);
         }
 
-        /*
+       
         [TestMethod]
         public void Details(int? id)
         {

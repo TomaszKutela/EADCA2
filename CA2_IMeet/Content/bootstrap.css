@@ -6089,7 +6089,7 @@ a.badge:focus {
 
     .jumbotron p {
         margin-bottom: 15px;
-        font-size: 21px;
+        font-size: 40px;
         font-weight: 200;
     }
 
@@ -6122,7 +6122,7 @@ a.badge:focus {
 
     .jumbotron h1,
     .jumbotron .h1 {
-        font-size: 63px;
+        font-size: 100px;
     }
 }
 
