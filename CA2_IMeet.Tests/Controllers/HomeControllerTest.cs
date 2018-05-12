@@ -35,12 +35,12 @@ namespace CA2_IMeet.Tests.Controllers
             ViewResult result = controller.About() as ViewResult;
 
             // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            Assert.AreEqual("IMeet is a web application to manage Meeting Rooms and Bookings.", result.ViewBag.Message);
         }
 
         [TestMethod]
         public void Contact()
-        {/*
+        {/* Delete as not required
             // Arrange
             HomeController controller = new HomeController();
 
