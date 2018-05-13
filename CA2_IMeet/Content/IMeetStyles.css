@@ -11,3 +11,44 @@
     color: #ffffff;
     border-color: #464545;
 }
+
+.btn-home:focus,
+.btn-home.focus {
+    color: #ffffff;
+    background-color: #978e83;
+    border-color: #6f675e;
+}
+
+.btn-home:hover {
+    color: #ffffff;
+    background-color: #978e83;
+    border-color: #92897e;
+}
+
+.btn-home:active,
+.btn-home.active,
+.open > .dropdown-toggle.btn-home {
+    color: #ffffff;
+    background-color: #978e83;
+    border-color: #92897e;
+}
+
+    .btn-home:active:hover,
+    .btn-home.active:hover,
+    .open > .dropdown-toggle.btn-home:hover,
+    .btn-home:active:focus,
+    .btn-home.active:focus,
+    .open > .dropdown-toggle.btn-home:focus,
+    .btn-home:active.focus,
+    .btn-home.active.focus,
+    .open > .dropdown-toggle.btn-home.focus {
+        color: #ffffff;
+        background-color: #867c71;
+        border-color: #6f675e;
+    }
+
+.btn-home:active,
+.btn-home.active,
+.open > .dropdown-toggle.btn-home {
+    background-image: none;
+}
