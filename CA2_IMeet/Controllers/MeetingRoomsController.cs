@@ -1,15 +1,12 @@
-﻿using System;
+﻿using CA2_IMeet.DAL;
+using CA2_IMeet.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using CA2_IMeet.DAL;
-using CA2_IMeet.Models;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 
 namespace CA2_IMeet.Controllers
 {
@@ -57,7 +54,7 @@ namespace CA2_IMeet.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            MeetingRoom meetingRoom = db.MeetingRooms.Where(n => n.Name == keyword).First();
+            MeetingRoom meetingRoom = db.MeetingRooms.Where(n => n.Name == keyword).FirstOrDefault();
             if (meetingRoom == null)
             {
                 return HttpNotFound();

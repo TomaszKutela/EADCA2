@@ -37,19 +37,5 @@ namespace CA2_IMeet.Tests.Controllers
             // Assert
             Assert.AreEqual("IMeet is a web application to manage Meeting Rooms and Bookings.", result.ViewBag.Message);
         }
-
-        [TestMethod]
-        public void Contact()
-        {/* Delete as not required
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.Contact() as ViewResult;
-
-            // Assert
-            Assert.IsNotNull(result);
-            */
-        }
     }
 }
