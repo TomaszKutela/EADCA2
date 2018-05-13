@@ -1,0 +1,13 @@
+﻿body {
+}
+
+.jumbotron {
+    background-image: url(../Images/meetingroom.jpg);
+    background-size: 100% auto;
+}
+
+.btn-home {
+    background-color: #464545;
+    color: #ffffff;
+    border-color: #464545;
+}

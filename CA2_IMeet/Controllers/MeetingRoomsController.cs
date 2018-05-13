@@ -16,15 +16,7 @@ namespace CA2_IMeet.Controllers
     [Authorize]
     public class MeetingRoomsController : Controller
     {
-        private static List<MeetingRoom> rooms = new List<MeetingRoom>()
-        {
-            new MeetingRoom {Name ="North Wall", Size = 20, Location = "One Spencer Dock", Equipment="Wi-Fi Projector VC WB"},
-            new MeetingRoom {Name ="Royal Canal", Size = 18, Location ="One Spencer Dock", Equipment="Wi-Fi Projector VC WB"},
-            new MeetingRoom {Name ="Grand Canal", Size = 8, Location ="One Spencer Dock", Equipment="Wi-Fi VC WB"},
-            new MeetingRoom {Name ="River Liffey", Size = 4, Location ="One Spencer Dock", Equipment="Wi-Fi Conf Phone"}
-       };
-
-
+        
         private BookingContext db = new BookingContext();
         
         // GET: MeetingRooms
