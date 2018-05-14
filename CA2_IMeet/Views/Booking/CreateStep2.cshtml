@@ -69,7 +69,7 @@
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create Meeting" class="btn btn-primary" formaction=@Url.Action("CreatePost", Model) />
                 &emsp;
-                <input type="submit" value="Change Date/Times" class="btn btn-default" formaction=@Url.Action("Create", new { Date = Model.Date, End_DateTime = Model.End_DateTime, Start_DateTime = Model.Start_DateTime }) />
+                <a class="btn btn-default" href="@Url.Action("Create", new { Date = Model.Date, End_DateTime = Model.End_DateTime, Start_DateTime = Model.Start_DateTime })">Change Date/Times</a>
             </div>
         </div>
     </div>
