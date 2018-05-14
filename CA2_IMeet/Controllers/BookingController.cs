@@ -349,6 +349,7 @@ namespace CA2_IMeet.Controllers
                     {
                         selected = true;
                     }
+
                 }
                 endTimes.Add(new SelectListItem { Text = date.ToShortTimeString(), Value = date.ToString(), Selected = selected });
                 date = date.AddHours(1);
