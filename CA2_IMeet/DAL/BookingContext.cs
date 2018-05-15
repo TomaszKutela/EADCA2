@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CA2_IMeet.DAL
 {
-    public class BookingContext : DbContext
+    public class BookingContext : DbContext, IBookingContext
     {
         public BookingContext() : base("BookingContext")
         {
@@ -21,6 +21,11 @@ namespace CA2_IMeet.DAL
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+        }
+
+        public void MarkAsModified(Object item)
+        {
+            Entry(item).State = EntityState.Modified;
         }
     }
 }

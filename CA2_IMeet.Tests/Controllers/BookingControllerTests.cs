@@ -1,182 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using CA2_IMeet.Controllers;
-using CA2_IMeet.DAL;
+﻿using CA2_IMeet.Controllers;
 using CA2_IMeet.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Web.Mvc;
 
 namespace CA2_IMeet.Tests.Controllers
 {
     [TestClass]
-    public class BookingControllerTests 
+    public class BookingControllerTests
     {
-        [TestMethod()]
-        public void IndexTest()
-        {
-            Assert.Fail();
-        }
+        //[TestMethod]
+        //public void PutProduct_ShouldFail_WhenDifferentID()
+        //{
+        //    var controller = new ProductController(new TestStoreAppContext());
+
+        //    var badresult = controller.PutProduct(999, GetDemoProduct());
+        //    Assert.IsInstanceOfType(badresult, typeof(BadRequestResult));
+        //}
 
         [TestMethod()]
-        public void CreateTest()
+        public void CreateTest_ShouldFailIfInvalidTimes()
         {
-            Assert.Fail();
+            BookingController controller = new BookingController();
+            BookingCreateViewModel bookingToAdd = new BookingCreateViewModel() { Date = new DateTime(2018, 11, 29), End_DateTime = new DateTime(2018, 11, 29, 10, 0, 0), Start_DateTime = new DateTime(2018, 11, 29, 11, 0, 1) };
+
+            var result = controller.CreateStep2(bookingToAdd) as ViewResult;
+
+            Assert.IsTrue(!controller.ModelState.IsValid);
+            Assert.IsTrue(controller.ViewData.ModelState.Count == 1,
+                 "Please check start and end times. A meeting cannot end before it starts.");
         }
-
-        [TestMethod()]
-        public void CreateStep2Test()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void CreatePostTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void EditTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void EditPostTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void DeleteTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void DeleteConfirmedTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void GetAvailableRoomsTest()
-        {
-            Assert.Fail();
-        }
-        /*
-
-[TestMethod]
-public void Index()
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-
-// Act
-{
-IEnumerable<Booking> bookingsToShow;
-if (User.IsInRole("Admin"))
-{
-bookingsToShow = db.Bookings.Where(b => b.Date >= DateTime.Today).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime).ToList();
-}
-else
-{
-string user_id = User.Identity.GetUserName();
-bookingsToShow = db.Bookings.Where(b => b.UserId == user_id).Where(b => b.Date >= DateTime.Today).Include(b => b.MeetingRoom).OrderBy(b => b.Date).ThenBy(b => b.Start_DateTime).ToList();
-}
-// Assert
-
-return View(bookingsToShow);
-
-}
-
-/*          // GET: Booking/Create
-//Used to Collect Criteria to Find Room
-public ActionResult Create()
-{
-PopulateStartTimeDropDownList();
-PopulateEndTimeDropDownList();
-return View();
-}
-
-[TestMethod]
-public void Create()
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-PopulateStartTimeDropDownList();
-PopulateEndTimeDropDownList();
-
-// Assert
-return View();
-
-}
-/*
-
-[TestMethod]
-public void Create([Bind(Include = "MeetingReference, RoomId, Date, Start_DateTime, End_DateTime")] Booking booking)
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-
-
-// Assert
-
-}
-[TestMethod]
-public void Edit(int? id)
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-
-
-// Assert
-
-}
-[TestMethod]
-public void EditPost(int? id)
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-
-
-// Assert
-
-}
-[TestMethod]
-public void Delete(int? id, bool? saveChangesError = false)
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-
-
-// Assert
-
-}
-[TestMethod]
-public void DeleteConfirmed(int id)
-{
-// Arrange
-BookingController bookingController = new BookingController();
-
-// Act
-
-
-// Assert
-
-}
-*/
-
     }
 }
