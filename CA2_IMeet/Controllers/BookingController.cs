@@ -313,7 +313,7 @@ namespace CA2_IMeet.Controllers
         {
             List<SelectListItem> startTimes = new List<SelectListItem>();
             DateTime date = DateTime.MinValue.AddHours(8); // start at 8am
-            DateTime endDate = DateTime.MinValue.AddHours(17); // end at 5pm
+            DateTime endDate = DateTime.MinValue.AddHours(18); // end at 6pm
             while (date < endDate)
             {
                 //used for edits to pass on the time that was previously selected
@@ -337,7 +337,7 @@ namespace CA2_IMeet.Controllers
         {
             List<SelectListItem> endTimes = new List<SelectListItem>();
             DateTime date = DateTime.MinValue.AddHours(9); // start at 8am
-            DateTime endDate = DateTime.MinValue.AddHours(17); // end at 5pm
+            DateTime endDate = DateTime.MinValue.AddHours(18); // end at 6pm
             while (date <= endDate)
             {
                 //used for edits to pass on the time that was previously selected
