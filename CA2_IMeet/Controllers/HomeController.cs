@@ -15,7 +15,7 @@ namespace CA2_IMeet.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "IMeet is a web application to manage Meeting Rooms and Bookings.";
+            ViewBag.Message = "IMeet is a Web Application to manage Meeting Rooms and Bookings.";
 
             return View();
         }
