@@ -1,16 +1,15 @@
-﻿using System;
+﻿using CA2_IMeet.DAL;
+using CA2_IMeet.Models;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using CA2_IMeet.DAL;
-using CA2_IMeet.Models;
-using System.Data.Entity.Infrastructure;
-using Microsoft.AspNet.Identity;
-using System.Globalization;
 
 namespace CA2_IMeet.Controllers
 {

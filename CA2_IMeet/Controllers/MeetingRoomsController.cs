@@ -13,9 +13,17 @@ namespace CA2_IMeet.Controllers
     [Authorize]
     public class MeetingRoomsController : Controller
     {
-        
-        private BookingContext db = new BookingContext();
-        
+
+        //private BookingContext db = new BookingContext();
+        private IBookingContext db = new BookingContext();
+
+        public MeetingRoomsController() { }
+
+        public MeetingRoomsController(IBookingContext context)
+        {
+            db = context;
+        }
+
         // GET: MeetingRooms
         public ActionResult Index(string sortOrder, string searchString)
         {
