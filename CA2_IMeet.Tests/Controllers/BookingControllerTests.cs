@@ -8,16 +8,16 @@ namespace CA2_IMeet.Tests.Controllers
 {
     [TestClass]
     public class BookingControllerTests
-    {
-        //[TestMethod]
-        //public void PutProduct_ShouldFail_WhenDifferentID()
-        //{
-        //    var controller = new ProductController(new TestStoreAppContext());
+    {   /*
+        [TestMethod]
+        public void Delete_ShouldFail_WhenDifferentID()
+        {
+            var controller = new BookingController(new TestBookingContext());
 
-        //    var badresult = controller.PutProduct(999, GetDemoProduct());
-        //    Assert.IsInstanceOfType(badresult, typeof(BadRequestResult));
-        //}
-
+            var badresult = controller.Delete(999, TestBookingDbSet());
+            Assert.IsInstanceOfType(badresult, typeof(BadRequestResult));
+        }
+        */
         [TestMethod()]
         public void CreateTest_ShouldFailIfInvalidTimes()
         {
