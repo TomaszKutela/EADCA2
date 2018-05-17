@@ -8,16 +8,29 @@ namespace CA2_IMeet.Tests.Controllers
 {
     [TestClass]
     public class BookingControllerTests
-    {   /*
+    {
         [TestMethod]
-        public void Delete_ShouldFail_WhenDifferentID()
+        public void Delete_ShouldFail_WhenNullID()
         {
-            var controller = new BookingController(new TestBookingContext());
+            var controller = new BookingController();
+            var expected = (int)System.Net.HttpStatusCode.BadRequest;
 
-            var badresult = controller.Delete(999, TestBookingDbSet());
-            Assert.IsInstanceOfType(badresult, typeof(BadRequestResult));
+            var badresult = controller.Delete(null) as HttpStatusCodeResult;
+
+            Assert.AreEqual(expected, badresult.StatusCode);
         }
-        */
+
+
+
+        [TestMethod]
+        public void Delete_ShouldFail_WhenIncorrectID()
+        {
+            var controller = new BookingController();
+
+            var badresult = controller.Delete(99999);
+            Assert.IsInstanceOfType(badresult, typeof(HttpNotFoundResult));
+        }
+
         [TestMethod()]
         public void CreateTest_ShouldFailIfInvalidTimes()
         {
